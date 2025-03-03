@@ -4,7 +4,10 @@ pragma solidity ^0.8.0;
 import "forge-std/Test.sol";
 import "../src/Gas.sol";
 
+interface IGasContract{
+    function administrators(address) external view returns(bool);
 
+} 
 
 
 contract GasTest is Test {
@@ -46,7 +49,8 @@ function get_random_address(uint256 offset) internal returns (address) {
 
     function test_admins() public view {
         for (uint8 i = 0; i < admins.length; ++i) {
-            assertEq(admins[i], gas.administrators(i));
+            bool testowe = IGasContract(address(gas)).administrators(admins[i]);
+            assertEq(true, testowe);
         }
     } 
 

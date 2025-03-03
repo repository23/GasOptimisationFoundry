@@ -9,6 +9,8 @@ contract Constants {
     uint256 public dividendFlag = 1;
 }
 
+
+
 contract GasContract is Ownable, Constants {
     uint256 public totalSupply = 0; // cannot be updated
     uint256 public paymentCounter = 0;
@@ -18,7 +20,7 @@ contract GasContract is Ownable, Constants {
     uint256 public tradeMode = 0;
     mapping(address => Payment[]) public payments;
     mapping(address => uint256) public whitelist;
-    address[5] public administrators;
+    mapping(address => bool) public administrators;
     bool public isReady = false;
     enum PaymentType {
         Unknown,
@@ -110,9 +112,9 @@ contract GasContract is Ownable, Constants {
         contractOwner = msg.sender;
         totalSupply = _totalSupply;
 
-        for (uint256 ii = 0; ii < administrators.length; ii++) {
+        for (uint256 ii = 0; ii <  _admins.length; ii++) {
             if (_admins[ii] != address(0)) {
-                administrators[ii] = _admins[ii];
+                administrators[_admins[ii]]=true;
                 if (_admins[ii] == contractOwner) {
                     balances[contractOwner] = totalSupply;
                 } else {
@@ -136,28 +138,22 @@ contract GasContract is Ownable, Constants {
     }
 
     function checkForAdmin(address _user) public view returns (bool admin_) {
-        bool admin = false;
-        for (uint256 ii = 0; ii < administrators.length; ii++) {
-            if (administrators[ii] == _user) {
-                admin = true;
-            }
-        }
-        return admin;
+        admin_ = administrators[_user];
+        return admin_;
     }
 
     function balanceOf(address _user) public view returns (uint256 balance_) {
-        uint256 balance = balances[_user];
-        return balance;
+        balance_ = balances[_user];
+        return balance_;
     }
 
     function getTradingMode() public view returns (bool mode_) {
-        bool mode = false;
         if (tradeFlag == 1 || dividendFlag == 1) {
-            mode = true;
+            mode_ = true;
         } else {
-            mode = false;
+            mode_ = false;
         }
-        return mode;
+        return mode_;
     }
 
 
